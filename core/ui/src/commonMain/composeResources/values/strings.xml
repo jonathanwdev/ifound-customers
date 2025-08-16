@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Ifound</string>
+    <string name="join_us_sign_up_message">Join Ifound today!</string>
+    <string name="welcome_back_sign_in_message">Welcome back</string>
+    <string name="name">name</string>
+    <string name="email">e-mail</string>
+    <string name="address">address</string>
+    <string name="password">password</string>
+    <string name="new_password">new password</string>
+    <string name="send">send</string>
+    <string name="confirm">confirm</string>
+    <string name="verify">verify</string>
+    <string name="password_confirmation">password confirmation</string>
+    <string name="sign_in">sign in</string>
+    <string name="sign_up">sign up</string>
+    <string name="already_have_account_sign_up_message">Already have an account? Log in here.</string>
+    <string name="click_to_get_location_sign_up_message">Click here to use current location</string>
+    <string name="forgot_password_sign_in_message">Forgot Your Password?</string>
+    <string name="insert_your_email_to_recover_password_message">Enter your email and we will send you a link to reset your password.</string>
+    <string name="verify_your_email_message">Verify your e-mail</string>
+    <string name="verification_code_sent_to_your_email_message">We've sent a verification code to your email. Please enter the code to continue.</string>
+    <string name="enter_your_verification_code_message">Please enter the verification code</string>
+    <string name="password_updated_success">Password updated!</string>
+    <string name="now_you_can_sign_in_with_new_password_message">Now you can sign in with your\n new password</string>
+    <string name="did_not_receive_email_resend_message">Didn't receive the email? Resend here!</string>
+    <string name="insert_verification_code">Insert verification code</string>
+    <string name="never_share_password_message">Never share your password\n with anyone</string>
+    <string name="create_new_password_message">Create your new password</string>
+    <string name="go_back_to_sign_in_message">Go back to Sign In</string>
+</resources>

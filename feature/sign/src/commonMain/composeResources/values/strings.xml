@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Ifound</string>
+    <string name="join_us_sign_up_message">Join Ifound today!</string>
+    <string name="welcome_back_sign_in_message">Welcome back</string>
+    <string name="name">name</string>
+    <string name="email">e-mail</string>
+    <string name="address">address</string>
+    <string name="password">password</string>
+    <string name="new_password">new password</string>
+    <string name="send">send</string>
+    <string name="confirm">confirm</string>
+    <string name="password_confirmation">password confirmation</string>
+    <string name="sign_in">sign in</string>
+    <string name="sign_up">sign up</string>
+    <string name="already_have_account_sign_up_message">Already have an account? Log in here.</string>
+    <string name="click_to_get_location_sign_up_message">Click here to use current location</string>
+    <string name="forgot_password_sign_in_message">Forgot Your Password?</string>
+
+</resources>
