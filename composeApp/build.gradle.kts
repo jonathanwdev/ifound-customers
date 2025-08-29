@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.detekt)
 }
 
 kotlin {
@@ -94,3 +95,6 @@ android {
 }
 
 
+detekt {
+    config.setFrom(files("$rootDir/config/detekt/detekt.yml")) // Adjust path if needed
+}

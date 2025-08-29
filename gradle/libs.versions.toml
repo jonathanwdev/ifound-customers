@@ -27,6 +27,7 @@ mokoPermission = "0.19.1"
 mokoGeo = "0.8.0"
 googlePlayServiceLocation = "21.0.1"
 kotlinxDateTime = "0.6.0"
+detekt = "1.23.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -95,7 +96,7 @@ moko-geo-compose = { module = "dev.icerock.moko:geo-compose", version.ref = "mok
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
-
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
