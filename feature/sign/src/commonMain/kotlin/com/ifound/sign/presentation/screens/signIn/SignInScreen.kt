@@ -9,14 +9,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.ifound.ui.UiRes
 import com.ifound.ui.components.common.CommonButton
@@ -24,7 +27,7 @@ import com.ifound.ui.components.common.CommonTextButton
 import com.ifound.ui.components.common.CommonTextField
 import com.ifound.ui.helpers.stringHelpers.capitalizeAllFirstLetter
 import com.ifound.ui.helpers.stringHelpers.capitalizeFirstLetter
-import com.ifound.ui.models.CommonButtonType
+import com.ifound.ui.models.ButtonStyle
 import com.ifound.ui.theme.IfoundTheme
 import com.ifound.ui.theme.Spacings
 import ifound.feature.sign.generated.resources.Res
@@ -43,13 +46,28 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SignInScreen(
     onNavigateToSignUp: () -> Unit,
-    onNavigateToRecoverPassword: () -> Unit
+    onNavigateToRecoverPassword: () -> Unit,
+    onNavigateToHome: () -> Unit,
 ) {
     val viewModel = koinViewModel<SignInViewModel>()
-    val screenState = viewModel.screenState
+    val uiState = viewModel.uiState
+    val uiEvent = viewModel.event
+
+    LaunchedEffect(Unit) {
+        uiEvent.collect { event ->
+            when(event) {
+                is SignInViewModel.SignInScreenEvents.SignSuccess -> {
+                    onNavigateToHome()
+                }
+                is SignInViewModel.SignInScreenEvents.SignError -> {
+                    onNavigateToHome()
+                }
+            }
+        }
+    }
 
     SignInView(
-        screenState = screenState,
+        uiState = uiState,
         onFormEven = viewModel::onFormEvent,
         onNavigateToSignUp = onNavigateToSignUp,
         onNavigateToRecoverPassword = onNavigateToRecoverPassword
@@ -60,7 +78,7 @@ fun SignInScreen(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SignInView(
-    screenState: SignInScreenState,
+    uiState: SignInUiState,
     onFormEven: (SignInFormEvent) -> Unit,
     onNavigateToSignUp: () -> Unit,
     onNavigateToRecoverPassword: () -> Unit
@@ -98,7 +116,8 @@ private fun SignInView(
                 )
                 Spacer(Modifier.height(35.dp))
                 CommonTextField(
-                    value = screenState.email,
+                    value = uiState.email,
+                    isErrorMessage = uiState.emailError,
                     onValueChange = {
                         onFormEven(SignInFormEvent.OnEmailChanged(it))
                     },
@@ -108,22 +127,27 @@ private fun SignInView(
                 )
                 Spacer(Modifier.height(15.dp))
                 CommonTextField(
-                    value = screenState.password,
+                    value = uiState.password,
+                    isErrorMessage = uiState.passwordError,
                     onValueChange = {
                         onFormEven(SignInFormEvent.OnPasswordChanged(it))
                     },
                     placeholder = stringResource(Res.string.password).capitalizeFirstLetter(),
                     leadingIcon = UiRes.Drawable.ic_lock,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(Modifier.height(15.dp))
                 CommonButton(
                     text = stringResource(Res.string.sign_in).capitalizeAllFirstLetter(),
+                    isLoading = uiState.isLoading,
                     onClick = {
                         onFormEven(SignInFormEvent.OnSubmit)
                     },
                     modifier = Modifier,
-                    type = CommonButtonType.Primary,
+                    buttonStyle = ButtonStyle.Primary,
                 )
 
             }
@@ -133,12 +157,14 @@ private fun SignInView(
             ) {
                 CommonButton(
                     text = stringResource(Res.string.sign_up).capitalizeAllFirstLetter(),
+                    enabled = !uiState.isLoading,
                     onClick = onNavigateToSignUp,
                     modifier = Modifier,
-                    type = CommonButtonType.Secondary
+                    buttonStyle = ButtonStyle.Secondary
                 )
                 Spacer(Modifier.height(10.dp))
                 CommonTextButton(
+                    enabled = !uiState.isLoading,
                     onClick = onNavigateToRecoverPassword,
                     text = stringResource(Res.string.forgot_password_sign_in_message),
                     leadingIcon = UiRes.Drawable.ic_lock_reset
@@ -154,7 +180,7 @@ private fun SignInView(
 private fun SignInScreenPreview() {
     IfoundTheme {
         SignInView(
-            screenState = SignInScreenState(),
+            uiState = SignInUiState(),
             onFormEven = {},
             onNavigateToSignUp = {},
             onNavigateToRecoverPassword = {}

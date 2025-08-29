@@ -1,0 +1,26 @@
+<resources>
+    <string name="search_stores">Search stores</string>
+    <string name="stores_near_title">Stores nearby</string>
+    <string name="stores">Stores</string>
+    <string name="view_all_on_map">View all on map</string>
+    <string name="sign_out">Sign out</string>
+    <string name="opened">Opened</string>
+    <string name="closed">Closed</string>
+    <string name="book_now">Book Now</string>
+    <string name="book">Book</string>
+    <string name="rating">Rating</string>
+    <string name="reviews">Reviews</string>
+    <string name="years">Years</string>
+    <string name="about_us">About us</string>
+    <string name="services">Services</string>
+    <string name="view_all">View All</string>
+    <string name="location">Location</string>
+    <string name="meet_us">Meet our team</string>
+    <string name="click_to_see_us_on_map">Click here to view us on map!</string>
+
+
+
+
+
+
+</resources>

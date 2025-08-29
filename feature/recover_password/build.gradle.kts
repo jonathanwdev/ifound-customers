@@ -25,6 +25,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "recover_password"
             isStatic = true
+            freeCompilerArgs += listOf("-Xbundle-id=com.ifound.recover_password")
         }
     }
 
@@ -53,10 +54,11 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.compose.navigation)
 
-            implementation(project(":core:ui"))
-            implementation(project(":core:domain"))
-            implementation(project(":core:data"))
-            implementation(project(":core:navigation"))
+
+            implementation(projects.core.ui)
+            implementation(projects.core.domain)
+            implementation(projects.core.data)
+            implementation(projects.core.navigation)
 
 
         }
@@ -72,7 +74,7 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        testOptions.targetSdk = libs.versions.android.targetSdk.get().toInt()
 
     }
 

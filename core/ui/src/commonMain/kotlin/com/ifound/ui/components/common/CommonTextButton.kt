@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ifound.ui.theme.IfoundTheme
 import ifound.core.ui.generated.resources.Res
@@ -57,7 +58,7 @@ fun CommonTextButton(
             Text(
                 text = text,
                 color = color,
-                style = MaterialTheme.typography.bodyLargeEmphasized
+                style = MaterialTheme.typography.bodyLargeEmphasized.copy(fontWeight = FontWeight.SemiBold)
             )
         }
     }

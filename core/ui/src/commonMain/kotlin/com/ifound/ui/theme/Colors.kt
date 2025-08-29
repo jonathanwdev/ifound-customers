@@ -12,10 +12,15 @@ val White = Color(0xFFFFFFFF)
 
 val FontBlack = Color(0xFF1C170D)
 val Black = Color(0xFF000000)
+val GreenOpen = Color(0xFF008000)
+val RedClose = Color(0xFF008000)
+
+val GrayPrimary = Color(0xFFCBCFD6)
+val GraySecondary = Color(0xFF555556)
 
 val ifoundColors = lightColorScheme(
     primary = YellowPrimary,
-    onPrimary = White,
+    onPrimary = YellowSecondary,
     secondary = YellowSecondary,
     tertiary = WhiteSecondary,
     onTertiary = YellowSecondary,

@@ -13,10 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.ifound.ui.UiRes
 import com.ifound.ui.components.common.CommonButton
 import com.ifound.ui.components.common.CommonTextField
-import com.ifound.ui.components.topBars.TopBarGoback
+import com.ifound.ui.components.topBars.TopBarLeadingIconCenteredText
 import com.ifound.ui.helpers.stringHelpers.capitalizeFirstLetter
 import com.ifound.ui.theme.IfoundTheme
 import com.ifound.ui.theme.Spacings
@@ -63,8 +59,8 @@ fun CreateNewPasswordView(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            TopBarGoback(
-                onGoBackClick = onNavigateBack
+            TopBarLeadingIconCenteredText(
+                onLeadingIconClick = onNavigateBack
             )
         }
     ) { paddingValues ->

@@ -5,33 +5,85 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ifound.common.utils.Platform
+import com.ifound.common.utils.currentPlatform
 import com.ifound.domain.models.RegisterCustomer
 import com.ifound.domain.repository.AuthRepository
+import com.ifound.domain.repository.LocalLocationRepository
+import dev.icerock.moko.geo.LocationTracker
+import dev.icerock.moko.permissions.PermissionsController
 import kotlinx.coroutines.launch
 
 class SignUpViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val localLocationRepository: LocalLocationRepository,
+    val locationTracker: LocationTracker,
+    val permissionsController: PermissionsController,
 ) : ViewModel() {
-    var state by mutableStateOf(SignUpScreenState())
+    var uiState by mutableStateOf(SignUpUiState())
         private set
+
+    init {
+        if (currentPlatform == Platform.ANDROID) {
+            viewModelScope.launch {
+                locationTracker.startTracking()
+            }
+        }
+    }
+
+    fun getLocation() {
+        viewModelScope.launch {
+            if (currentPlatform == Platform.IOS) {
+                locationTracker.startTracking()
+            }
+            val locations = localLocationRepository.getCurrentLocation().fold(
+                onSuccess = {
+                    if (currentPlatform == Platform.IOS) {
+                        locationTracker.stopTracking()
+                    }
+                    it
+                },
+                onFailure = {
+                    null
+                    if (currentPlatform == Platform.IOS) {
+                        locationTracker.stopTracking()
+                    }
+                }
+            )
+
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        if (currentPlatform == Platform.ANDROID) {
+            locationTracker.stopTracking()
+        }
+    }
+
 
     fun formEvent(event: SignUpFormEvent) {
         when (event) {
             is SignUpFormEvent.OnNameChanged -> {
-                state = state.copy(name = event.name)
+                uiState = uiState.copy(name = event.name)
             }
+
             is SignUpFormEvent.OnEmailChanged -> {
-                state = state.copy(email = event.email)
+                uiState = uiState.copy(email = event.email)
             }
+
             is SignUpFormEvent.OnPasswordChanged -> {
-                state = state.copy(password = event.password)
+                uiState = uiState.copy(password = event.password)
             }
+
             is SignUpFormEvent.OnPasswordConfirmationChanged -> {
-                state = state.copy(passwordConfirmation = event.passwordConfirmation)
+                uiState = uiState.copy(passwordConfirmation = event.passwordConfirmation)
             }
+
             is SignUpFormEvent.OnAddressChanged -> {
-                state = state.copy(address = event.address)
+                uiState = uiState.copy(address = event.address)
             }
+
             is SignUpFormEvent.OnSubmit -> {
                 singUp()
             }
@@ -40,20 +92,20 @@ class SignUpViewModel(
 
     fun singUp() {
         viewModelScope.launch {
-            state = state.copy(isLoading = true)
+            uiState = uiState.copy(isLoading = true)
             authRepository.signUp(
                 RegisterCustomer(
-                    name = state.name,
-                    email = state.email,
-                    password = state.password,
-                    passwordConfirmation = state.passwordConfirmation
+                    name = uiState.name,
+                    email = uiState.email,
+                    password = uiState.password,
+                    passwordConfirmation = uiState.passwordConfirmation
                 )
             ).fold(
                 onSuccess = {
-                    state = state.copy(isLoading = false)
+                    uiState = uiState.copy(isLoading = false)
                 },
                 onFailure = {
-                    state = state.copy(isLoading = false)
+                    uiState = uiState.copy(isLoading = false)
                 }
             )
         }

@@ -22,12 +22,13 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "domain"
             isStatic = true
+            freeCompilerArgs += listOf("-Xbundle-id=com.ifound.domain")
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-
+            implementation(libs.kotlinx.coroutines.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -41,7 +42,7 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        testOptions.targetSdk = libs.versions.android.targetSdk.get().toInt()
 
     }
 

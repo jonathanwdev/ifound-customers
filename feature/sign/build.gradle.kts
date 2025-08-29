@@ -25,6 +25,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "sign"
             isStatic = true
+            freeCompilerArgs += listOf("-Xbundle-id=com.ifound.sign")
         }
     }
 
@@ -53,10 +54,17 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.compose.navigation)
 
-            implementation(project(":core:ui"))
-            implementation(project(":core:domain"))
-            implementation(project(":core:data"))
-            implementation(project(":core:navigation"))
+            implementation(libs.moko.permission.compose)
+            implementation(libs.moko.permission.core)
+            implementation(libs.moko.permission.location)
+            implementation(libs.moko.geo)
+            implementation(libs.moko.geo.compose)
+
+            implementation(projects.core.ui)
+            implementation(projects.core.domain)
+            implementation(projects.core.data)
+            implementation(projects.core.navigation)
+            implementation(projects.core.common)
 
 
         }
@@ -72,7 +80,7 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        testOptions.targetSdk = libs.versions.android.targetSdk.get().toInt()
 
     }
 

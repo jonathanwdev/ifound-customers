@@ -1,27 +1,34 @@
 package com.ifound.ui.components.common
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.ifound.ui.models.CommonButtonType
+import com.ifound.ui.models.ButtonSizes
+import com.ifound.ui.models.ButtonStyle
 import com.ifound.ui.theme.Alpha
 import com.ifound.ui.theme.IfoundTheme
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -30,67 +37,113 @@ fun CommonButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
-    type: CommonButtonType = CommonButtonType.Primary,
+    leadingIcon: DrawableResource? = null,
+    trailingIcon: DrawableResource? = null,
+    sizes: ButtonSizes = ButtonSizes.FULL,
+    buttonStyle: ButtonStyle = ButtonStyle.Primary,
     enabled: Boolean = true,
+    shape: Shape = MaterialTheme.shapes.extraLarge,
     isLoading: Boolean = false,
+    elevation: ButtonElevation? = null,
 ) {
-    val colors: Pair<Color, Color> = when(type) {
-        CommonButtonType.Primary -> Pair(
-            MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.surface
-        )
-        CommonButtonType.Secondary -> Pair(
-            MaterialTheme.colorScheme.tertiary,
-            MaterialTheme.colorScheme.onSurface
-        )
-    }
 
     Button(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.then(
+            if (sizes == ButtonSizes.FULL) {
+                Modifier.fillMaxWidth()
+            } else {
+                Modifier
+            }
+        ),
+        elevation = elevation,
         onClick = onClick,
         enabled = !isLoading && enabled,
         colors = ButtonDefaults.buttonColors(
-            containerColor = colors.first
+            containerColor = buttonStyle.first.copy(alpha = if (enabled) Alpha.FULL else Alpha.DISABLED)
         ),
-        contentPadding = PaddingValues(
-            vertical = 15.dp,
-            horizontal = 24.dp
-        ),
-        shape = RoundedCornerShape(
-            12.dp
-        )
+        contentPadding = sizes.padding,
+        shape = shape,
     ) {
         Row(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.then(
+                if (sizes == ButtonSizes.FULL) {
+                    Modifier
+                        .weight(1f)
+                } else {
+                    Modifier
+                }
+            ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            if(isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    color = colors.second,
-                    trackColor = colors.second.copy(alpha = Alpha.DISABLED),
-                )
-                Spacer(Modifier.width(10.dp))
+            AnimatedContent(
+                targetState = isLoading
+            ) { loading ->
+                if (loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                            .size(if (sizes == ButtonSizes.FULL) 24.dp else 16.dp),
+                        color = buttonStyle.second,
+                        trackColor = buttonStyle.second.copy(alpha = Alpha.DISABLED),
+                    )
+
+                }
+                if (leadingIcon != null && !loading) {
+                    Icon(
+                        painter = painterResource(leadingIcon),
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                            .size(if (sizes == ButtonSizes.FULL) 24.dp else 16.dp),
+                        contentDescription = null,
+                        tint = buttonStyle.second
+                    )
+                }
             }
             Text(
                 text = text,
-                style = MaterialTheme.typography.titleMediumEmphasized,
-                color = colors.second
+                style = MaterialTheme.typography.titleMediumEmphasized.copy(fontWeight = FontWeight.Bold),
+                color = buttonStyle.second
             )
+            if (trailingIcon != null) {
+                Icon(
+                    painter = painterResource(trailingIcon),
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .size(if (sizes == ButtonSizes.FULL) 24.dp else 16.dp),
+                    contentDescription = null,
+                    tint = buttonStyle.second
+                )
+            }
         }
 
     }
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-private fun CommonButtonPreview() {
+private fun CommonButtonFullPreview() {
     IfoundTheme {
         CommonButton(
             text = "Hello World",
             onClick = {},
+            enabled = false,
+            isLoading = false
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CommonButtonSmallPreview() {
+    IfoundTheme {
+        CommonButton(
+            text = "Hello",
+            onClick = {},
+            enabled = false,
+            buttonStyle = ButtonStyle.Primary,
+            sizes = ButtonSizes.SMALL,
             isLoading = true
         )
     }

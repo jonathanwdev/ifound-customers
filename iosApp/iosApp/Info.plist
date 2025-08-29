@@ -2,30 +2,31 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CADisableMinimumFrameDurationOnPhone</key>
-    <true/>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-        <true/>
-        <key>NSExceptionDomains</key>
-        <dict>
-            <key>localhost</key> <!-- Para o simulador -->
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>
-                <key>NSExceptionAllowsInsecureHTTPLoads</key>
-                <true/>
-            </dict>
-            <key>your.machine.local.ip.address</key> 
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>
-                <key>NSExceptionAllowsInsecureHTTPLoads</key>
-                <true/>
-            </dict>
-        </dict>
-    </dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>So, We need your location to search services and addresses.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+			<key>your.machine.local.ip.address</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
 </dict>
 </plist>
-

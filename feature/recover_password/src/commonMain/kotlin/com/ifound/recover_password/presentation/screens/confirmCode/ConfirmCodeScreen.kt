@@ -24,7 +24,7 @@ import com.ifound.ui.UiRes
 import com.ifound.ui.components.common.CommonButton
 import com.ifound.ui.components.common.CommonOtpTextField
 import com.ifound.ui.components.common.CommonTextButton
-import com.ifound.ui.components.topBars.TopBarGoback
+import com.ifound.ui.components.topBars.TopBarLeadingIconCenteredText
 import com.ifound.ui.helpers.stringHelpers.capitalizeFirstLetter
 import com.ifound.ui.theme.IfoundTheme
 import com.ifound.ui.theme.Spacings
@@ -67,8 +67,8 @@ fun ConfirmCodeView(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            TopBarGoback(
-                onGoBackClick = onNavigateBack
+            TopBarLeadingIconCenteredText(
+                onLeadingIconClick = onNavigateBack
             )
         }
     ) { paddingValues ->

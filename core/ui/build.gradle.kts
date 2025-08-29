@@ -24,6 +24,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ui"
             isStatic = true
+            freeCompilerArgs += listOf("-Xbundle-id=com.ifound.ui")
         }
     }
 
@@ -47,6 +48,10 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
 
+            implementation(libs.moko.permission.compose)
+            implementation(libs.moko.permission.core)
+            implementation(libs.moko.permission.location)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -60,8 +65,11 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        testOptions.targetSdk = libs.versions.android.targetSdk.get().toInt()
 
+    }
+    lint {
+        abortOnError = false
     }
 
     compileOptions {

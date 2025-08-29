@@ -40,10 +40,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-
-
             implementation(compose.ui)
-
             // Nav
             implementation(libs.compose.navigation)
 
@@ -51,12 +48,17 @@ kotlin {
             implementation(libs.koin.core)
 
 
-            implementation(project(":core:domain"))
-            implementation(project(":core:data"))
-            implementation(project(":core:navigation"))
-            implementation(project(":core:ui"))
-            implementation(project(":feature:sign"))
-            implementation(project(":feature:recover_password"))
+            // Project Modules
+            implementation(projects.core.domain)
+            implementation(projects.core.data)
+            implementation(projects.core.navigation)
+            implementation(projects.core.common)
+            implementation(projects.core.ui)
+            implementation(projects.feature.sign)
+            implementation(projects.feature.recoverPassword)
+            implementation(projects.feature.stores)
+            implementation(projects.feature.appointment)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

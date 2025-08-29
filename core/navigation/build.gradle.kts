@@ -25,6 +25,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "navigation"
             isStatic = true
+            freeCompilerArgs += listOf("-Xbundle-id=com.ifound.navigation")
         }
     }
 
@@ -61,7 +62,7 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        testOptions.targetSdk = libs.versions.android.targetSdk.get().toInt()
 
     }
 

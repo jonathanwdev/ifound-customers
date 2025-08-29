@@ -1,11 +1,16 @@
 package com.ifound.ui.components.common
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,11 +40,13 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun CommonTextField(
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
     value: String = "",
+    isErrorMessage: String? = null,
     placeholder: String? = null,
     leadingIcon: DrawableResource? = null,
     trailingIcon: DrawableResource? = null,
@@ -51,79 +58,101 @@ fun CommonTextField(
 ) {
     var showPassword by remember { mutableStateOf(false) }
 
-    TextField(
-        modifier = modifier.fillMaxWidth(),
-        onValueChange = onValueChange,
-        value = value,
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
-            focusedContainerColor = MaterialTheme.colorScheme.tertiary,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            unfocusedTrailingIconColor = MaterialTheme.colorScheme.onTertiary,
-            focusedTrailingIconColor = MaterialTheme.colorScheme.onTertiary,
-            unfocusedLeadingIconColor = MaterialTheme.colorScheme.onTertiary,
-            focusedLeadingIconColor = MaterialTheme.colorScheme.onTertiary,
-            selectionColors = TextSelectionColors(
-                handleColor = MaterialTheme.colorScheme.onSurface,
-                backgroundColor = Color.Unspecified
-            )
-        ),
-        visualTransformation = keyboardOptions.keyboardType.getKeyboardVisualTransformation(showPassword),
-        singleLine = true,
-        keyboardOptions = keyboardOptions,
-        shape = RoundedCornerShape(
-            12.dp
-        ),
-        textStyle = MaterialTheme.typography.bodyLarge.copy(
-            fontWeight = FontWeight.Normal,
-            fontSize = 16.sp
-        ),
-        leadingIcon = {
-            leadingIcon?.let { icon ->
-                Icon(
-                    painter = painterResource(icon),
-                    modifier = Modifier.size(23.dp),
-                    contentDescription = "leading icon"
+    Column {
+        TextField(
+            modifier = modifier.fillMaxWidth(),
+            onValueChange = onValueChange,
+            value = value,
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                focusedContainerColor = MaterialTheme.colorScheme.tertiary,
+                errorContainerColor = MaterialTheme.colorScheme.tertiary,
+                focusedPlaceholderColor = MaterialTheme.colorScheme.onTertiary,
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onTertiary,
+                errorTextColor = MaterialTheme.colorScheme.error,
+                errorPlaceholderColor = MaterialTheme.colorScheme.error,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                errorIndicatorColor = Color.Transparent,
+                errorTrailingIconColor = MaterialTheme.colorScheme.error,
+                errorLeadingIconColor = MaterialTheme.colorScheme.error,
+                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onTertiary,
+                focusedTrailingIconColor = MaterialTheme.colorScheme.onTertiary,
+                unfocusedLeadingIconColor = MaterialTheme.colorScheme.onTertiary,
+                focusedLeadingIconColor = MaterialTheme.colorScheme.onTertiary,
+                selectionColors = TextSelectionColors(
+                    handleColor = MaterialTheme.colorScheme.onSurface,
+                    backgroundColor = Color.Unspecified
                 )
-            }
-
-        },
-        trailingIcon = {
-            if (keyboardOptions.keyboardType == KeyboardType.Password) {
-                Icon(
-                    painter = painterResource(if (showPassword) Res.drawable.ic_eye_blind else Res.drawable.ic_eye),
-                    contentDescription = "show password",
-                    modifier = Modifier.size(23.dp).clickable {
-                        showPassword = !showPassword
-                    }
-                )
-            } else {
-                trailingIcon?.let { icon ->
+            ),
+            isError = isErrorMessage != null,
+            visualTransformation = keyboardOptions.keyboardType.getKeyboardVisualTransformation(
+                showPassword
+            ),
+            singleLine = true,
+            keyboardOptions = keyboardOptions,
+            shape = MaterialTheme.shapes.extraLarge,
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp
+            ),
+            leadingIcon = {
+                leadingIcon?.let { icon ->
                     Icon(
                         painter = painterResource(icon),
-                        contentDescription = "trailing icon",
-                        modifier = Modifier.size(24.dp).clickable(onTrailingIconClick != null) {
-                            onTrailingIconClick?.invoke()
+                        modifier = Modifier.size(23.dp),
+                        contentDescription = "leading icon"
+                    )
+                }
+
+            },
+            trailingIcon = {
+                if (keyboardOptions.keyboardType == KeyboardType.Password) {
+                    Icon(
+                        painter = painterResource(if (showPassword) Res.drawable.ic_eye_blind else Res.drawable.ic_eye),
+                        contentDescription = "show password",
+                        modifier = Modifier.size(23.dp).clickable {
+                            showPassword = !showPassword
                         }
+                    )
+                } else {
+                    trailingIcon?.let { icon ->
+                        Icon(
+                            painter = painterResource(icon),
+                            contentDescription = "trailing icon",
+                            modifier = Modifier.size(24.dp).clickable(onTrailingIconClick != null) {
+                                onTrailingIconClick?.invoke()
+                            }
+                        )
+                    }
+                }
+
+            },
+            placeholder = {
+                placeholder?.let { place ->
+                    Text(
+                        text = place,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp
+                        )
                     )
                 }
             }
-
-        },
-        placeholder = {
-            placeholder?.let { place ->
-                Text(
-                    text = place,
-                    color = MaterialTheme.colorScheme.onTertiary,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp
-                    )
-                )
-            }
+        )
+        isErrorMessage?.let { error ->
+            Spacer(Modifier.height(1.dp))
+            Text(
+                text = isErrorMessage,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 11.sp
+                ),
+                modifier = Modifier.padding(start = 14.dp)
+            )
         }
-    )
+    }
 }
 
 
@@ -133,7 +162,7 @@ private fun CommonTextFieldPreview() {
     IfoundTheme {
         CommonTextField(
             onValueChange = {},
-            value = "Hello text field",
+            value = "",
             placeholder = "Placeholder"
 
         )
@@ -162,6 +191,21 @@ private fun CommonTextFieldWithPasswordPreview() {
             onValueChange = {},
             value = "",
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            leadingIcon = Res.drawable.ic_person_rounded,
+            placeholder = "Password"
+        )
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+private fun CommonTextFieldWithPasswordError() {
+    IfoundTheme {
+        CommonTextField(
+            onValueChange = {},
+            value = "error",
+            isErrorMessage = "Invalid credentials",
             leadingIcon = Res.drawable.ic_person_rounded,
             placeholder = "Password"
         )

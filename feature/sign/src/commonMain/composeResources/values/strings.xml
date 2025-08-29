@@ -15,5 +15,8 @@
     <string name="already_have_account_sign_up_message">Already have an account? Log in here.</string>
     <string name="click_to_get_location_sign_up_message">Click here to use current location</string>
     <string name="forgot_password_sign_in_message">Forgot Your Password?</string>
+    <string name="enable_location_sign_up_message">Please, Click here to enable location</string>
+    <string name="please_wait">Please, wait...</string>
+    <string name="book">Book</string>
 
 </resources>

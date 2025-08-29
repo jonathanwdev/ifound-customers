@@ -20,6 +20,14 @@ fun NavGraphBuilder.signNavigation(
                 },
                 onNavigateToRecoverPassword = {
                     navController.navigate(Routes.ForgotPassword)
+                },
+                onNavigateToHome = {
+                    navController.navigate(Routes.StoresBaseRoute) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
                 }
             )
         }

@@ -22,19 +22,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.ifound.common.utils.currentPlatform
 import com.ifound.ui.UiRes
 import com.ifound.ui.components.common.CommonButton
 import com.ifound.ui.components.common.CommonTextButton
 import com.ifound.ui.components.common.CommonTextField
 import com.ifound.ui.helpers.stringHelpers.capitalizeAllFirstLetter
 import com.ifound.ui.helpers.stringHelpers.capitalizeFirstLetter
+import com.ifound.ui.state.rememberMokoPermissionState
 import com.ifound.ui.theme.IfoundTheme
 import com.ifound.ui.theme.Spacings
+import dev.icerock.moko.geo.compose.BindLocationTrackerEffect
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionState
+import dev.icerock.moko.permissions.compose.BindEffect
+import dev.icerock.moko.permissions.location.LOCATION
 import ifound.feature.sign.generated.resources.Res
 import ifound.feature.sign.generated.resources.address
 import ifound.feature.sign.generated.resources.already_have_account_sign_up_message
 import ifound.feature.sign.generated.resources.click_to_get_location_sign_up_message
 import ifound.feature.sign.generated.resources.email
+import ifound.feature.sign.generated.resources.enable_location_sign_up_message
 import ifound.feature.sign.generated.resources.name
 import ifound.feature.sign.generated.resources.password
 import ifound.feature.sign.generated.resources.password_confirmation
@@ -46,23 +54,47 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SignUpScreen(
-    onGoBack: () -> Unit
+    onGoBack: () -> Unit,
+
 ) {
     val viewModel = koinViewModel<SignUpViewModel>()
-    val screenState = viewModel.state
+    val uiState = viewModel.uiState
+
+    val permissionState = rememberMokoPermissionState(
+        viewModel.permissionsController,
+        Permission.LOCATION
+    )
+
+
+    BindEffect(viewModel.permissionsController)
+    BindLocationTrackerEffect(locationTracker = viewModel.locationTracker)
 
     SignUpView(
         onGoBack = onGoBack,
         onFormEvent = viewModel::formEvent,
-        state = screenState
+        onSearchAddress = viewModel::getLocation,
+        permissionState = permissionState.state,
+        onRequestPermission = {
+            permissionState.requestPermission()
+        },
+        onOpenSettings = {
+            viewModel.permissionsController.openAppSettings()
+        },
+        uiState = uiState
     )
+
+
 }
 
 @Composable
 fun SignUpView(
     onGoBack: () -> Unit,
     onFormEvent: (SignUpFormEvent) -> Unit,
-    state: SignUpScreenState
+    onRequestPermission: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onSearchAddress: () -> Unit,
+    permissionState: PermissionState,
+    uiState: SignUpUiState
 ) {
 
     Scaffold(
@@ -108,7 +140,7 @@ fun SignUpView(
                     onValueChange = {
                         onFormEvent(SignUpFormEvent.OnNameChanged(it))
                     },
-                    value = state.name,
+                    value = uiState.name,
                     placeholder = stringResource(Res.string.name).capitalizeFirstLetter(),
                     leadingIcon = UiRes.Drawable.ic_person_rounded,
                 )
@@ -116,7 +148,7 @@ fun SignUpView(
                     onValueChange = {
                         onFormEvent(SignUpFormEvent.OnEmailChanged(it))
                     },
-                    value = state.email,
+                    value = uiState.email,
                     placeholder = stringResource(Res.string.email).capitalizeFirstLetter(),
                     leadingIcon = UiRes.Drawable.ic_at,
                 )
@@ -124,21 +156,41 @@ fun SignUpView(
                     onValueChange = {
                         onFormEvent(SignUpFormEvent.OnAddressChanged(it))
                     },
-                    value = state.address,
+                    value = uiState.address,
                     placeholder = stringResource(Res.string.address).capitalizeFirstLetter(),
                     leadingIcon = UiRes.Drawable.ic_location_pin,
                 )
-                CommonTextButton(
-                    onClick = {},
-                    text = stringResource(Res.string.click_to_get_location_sign_up_message),
-                    leadingIcon = UiRes.Drawable.ic_location_pin,
-                    modifier = Modifier.padding(start = 12.dp)
-                )
+                if (permissionState == PermissionState.Granted) {
+                    CommonTextButton(
+                        onClick = {
+                            onSearchAddress()
+                        },
+                        text = stringResource(Res.string.click_to_get_location_sign_up_message),
+                        leadingIcon = UiRes.Drawable.ic_location_pin,
+                        modifier = Modifier.padding(start = 12.dp)
+                    )
+                } else {
+                    CommonTextButton(
+                        onClick = {
+                            if (
+                                permissionState == PermissionState.DeniedAlways
+                                || permissionState == PermissionState.Denied
+                            ) {
+                                onOpenSettings()
+                            } else {
+                                onRequestPermission()
+                            }
+                        },
+                        text = stringResource(Res.string.enable_location_sign_up_message),
+                        leadingIcon = UiRes.Drawable.ic_location_edit,
+                        modifier = Modifier.padding(start = 12.dp)
+                    )
+                }
                 CommonTextField(
                     onValueChange = {
                         onFormEvent(SignUpFormEvent.OnPasswordChanged(it))
                     },
-                    value = state.password,
+                    value = uiState.password,
                     placeholder = stringResource(Res.string.password).capitalizeFirstLetter(),
                     leadingIcon = UiRes.Drawable.ic_lock,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -147,7 +199,7 @@ fun SignUpView(
                     onValueChange = {
                         onFormEvent(SignUpFormEvent.OnPasswordConfirmationChanged(it))
                     },
-                    value = state.passwordConfirmation,
+                    value = uiState.passwordConfirmation,
                     placeholder = stringResource(Res.string.password_confirmation).capitalizeAllFirstLetter(),
                     leadingIcon = UiRes.Drawable.ic_lock,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -157,8 +209,8 @@ fun SignUpView(
             CommonButton(
                 text = stringResource(Res.string.sign_up).capitalizeAllFirstLetter(),
                 modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
-                isLoading = state.isLoading,
-                onClick ={
+                isLoading = uiState.isLoading,
+                onClick = {
                     onFormEvent(SignUpFormEvent.OnSubmit)
                 }
             )
@@ -181,7 +233,11 @@ private fun SignUpScreenPreview() {
         SignUpView(
             onGoBack = {},
             onFormEvent = {},
-            state = SignUpScreenState()
+            onRequestPermission = {},
+            uiState = SignUpUiState(),
+            onOpenSettings = {},
+            onSearchAddress = {},
+            permissionState = PermissionState.Granted
         )
 
     }

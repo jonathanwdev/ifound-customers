@@ -23,6 +23,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "data"
             isStatic = true
+            freeCompilerArgs += listOf("-Xbundle-id=com.ifound.data")
         }
     }
 
@@ -43,7 +44,13 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
-            implementation(project(":core:domain"))
+
+            implementation(libs.moko.geo)
+            implementation(libs.moko.permission.core)
+            implementation(libs.moko.permission.compose)
+
+            implementation(projects.core.common)
+            implementation(projects.core.domain)
 
         }
         commonTest.dependencies {
@@ -58,7 +65,7 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        testOptions.targetSdk = libs.versions.android.targetSdk.get().toInt()
 
     }
 
